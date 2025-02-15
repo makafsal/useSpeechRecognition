@@ -1,0 +1,31 @@
+{
+  "name": "usespeechrecognition",
+  "version": "1.0.0",
+  "description": "A custom React hook for speech recognition built using SpeechRecognition API",
+  "main": "src/useSpeechRecognition.ts",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/makafsal/useSpeechRecognition.git"
+  },
+  "keywords": [
+    "speech",
+    "recognition",
+    "react",
+    "hook",
+    "custom"
+  ],
+  "author": "Afsal K",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/makafsal/useSpeechRecognition/issues"
+  },
+  "homepage": "https://github.com/makafsal/useSpeechRecognition#readme",
+  "devDependencies": {
+    "@types/react": "^19.0.8",
+    "react": "^19.0.0",
+    "typescript": "^5.7.3"
+  }
+}
