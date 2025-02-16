@@ -1,7 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export const useSpeechRecognition = (commands = []) => {
-  const recognition = useRef<any>(null);
+interface SpeechRecognitionHook {
+  onStart: () => void;
+  onStop: () => void;
+  isListening: boolean;
+  errorMessage: string;
+  result: string;
+}
+
+const ERR = "SpeechRecognition API is not supported in this browser.";
+
+export const useSpeechRecognition = (commands = []): SpeechRecognitionHook => {
+  const recognitionRef = useRef<any>(null);
   // State
   const [isListening, setIsListening] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -10,38 +20,8 @@ export const useSpeechRecognition = (commands = []) => {
   const grammar = `#JSGF V1.0; grammar commands; public <command> = ${commands.join(
     " | "
   )};`;
-
-  useEffect(() => {
-    const _window = window as any;
-    const SpeechRecognition =
-      _window?.SpeechRecognition || _window?.webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      console.error("SpeechRecognition API is not supported in this browser.");
-      return;
-    }
-    const SpeechGrammarList =
-      _window?.SpeechGrammarList || _window?.webkitSpeechGrammarList;
-
-    recognition.current = new SpeechRecognition();
-
-    const speechRecognitionList = new SpeechGrammarList();
-
-    speechRecognitionList.addFromString(grammar, 1);
-
-    recognition.current.grammars = speechRecognitionList;
-    recognition.current.continuous = false;
-    recognition.current.lang = "en-US";
-    recognition.current.interimResults = false;
-    recognition.current.maxAlternatives = 1;
-    recognition.current.onerror = (event: any) => onError(event);
-    recognition.current.onresult = (event: any) => onResult(event);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const onStop = useCallback(() => {
-    recognition?.current.stop();
+    recognitionRef?.current.stop();
     setIsListening(false);
   }, []);
 
@@ -54,7 +34,7 @@ export const useSpeechRecognition = (commands = []) => {
     setErrorMessage("");
     setResult("");
 
-    recognition?.current.start();
+    recognitionRef?.current.start();
     setIsListening(true);
 
     setTimeout(() => onStop(), 8000);
@@ -70,6 +50,43 @@ export const useSpeechRecognition = (commands = []) => {
     setErrorMessage("No voice detected.");
     onStop();
   };
+
+  useEffect(() => {
+    const _window = window as any;
+    const SpeechRecognition =
+      _window?.SpeechRecognition || _window?.webkitSpeechRecognition;
+
+    const SpeechGrammarList =
+      _window?.SpeechGrammarList || _window?.webkitSpeechGrammarList;
+
+    if (SpeechRecognition) {
+      recognitionRef.current = new SpeechRecognition();
+
+      const speechRecognitionList = new SpeechGrammarList();
+
+      speechRecognitionList.addFromString(grammar, 1);
+
+      recognitionRef.current.grammars = speechRecognitionList;
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.lang = "en-US";
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.maxAlternatives = 1;
+      recognitionRef.current.onerror = (event: any) => onError(event);
+      recognitionRef.current.onresult = (event: any) => onResult(event);
+    }
+  }, []);
+
+  if (!recognitionRef?.current) {
+    console.error(ERR);
+
+    return {
+      onStart,
+      onStop,
+      isListening,
+      errorMessage: ERR,
+      result
+    };
+  }
 
   return {
     onStart,

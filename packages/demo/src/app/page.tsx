@@ -1,5 +1,3 @@
-"use client"
-
 import Image from "next/image";
 import styles from "./page.module.css";
 import { MicButton } from "./components/MicButton/MicButton";
@@ -9,8 +7,8 @@ import { useEffect } from "react";
 export default function Home() {
   const { onStart, isListening, result, errorMessage } = useSpeechRecognition();
   useEffect(() => {
-    console.log(isListening)
-  }, [isListening])
+    console.log(result);
+  }, [result]);
 
   return (
     <div className={styles.page}>
