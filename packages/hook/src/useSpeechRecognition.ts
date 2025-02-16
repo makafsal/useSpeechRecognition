@@ -8,7 +8,8 @@ interface SpeechRecognitionHook {
   result: string;
 }
 
-const ERR = "SpeechRecognition API is not supported in this browser.";
+const BROWSER_ERR = "SpeechRecognition API is not supported in this browser.";
+const DETECTION_ERR = "No speech detected.";
 
 export const useSpeechRecognition = (commands = []): SpeechRecognitionHook => {
   const recognitionRef = useRef<any>(null);
@@ -47,7 +48,7 @@ export const useSpeechRecognition = (commands = []): SpeechRecognitionHook => {
   };
 
   const onError = (event: any) => {
-    setErrorMessage("No voice detected.");
+    setErrorMessage(DETECTION_ERR);
     onStop();
   };
 
@@ -77,13 +78,13 @@ export const useSpeechRecognition = (commands = []): SpeechRecognitionHook => {
   }, []);
 
   if (!recognitionRef?.current) {
-    console.error(ERR);
+    console.error(BROWSER_ERR);
 
     return {
       onStart,
       onStop,
       isListening,
-      errorMessage: ERR,
+      errorMessage: BROWSER_ERR,
       result
     };
   }
