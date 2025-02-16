@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export const useVoiceRecognition = (commands = []) => {
+export const useSpeechRecognition = (commands = []) => {
   const recognition = useRef<any>(null);
   // State
   const [isListening, setIsListening] = useState(false);
