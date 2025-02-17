@@ -11,14 +11,24 @@ interface SpeechRecognitionHook {
 const BROWSER_ERR = "SpeechRecognition API is not supported in this browser.";
 const DETECTION_ERR = "No speech detected.";
 
-export const useSpeechRecognition = (commands = []): SpeechRecognitionHook => {
+/**
+ * Custom hook for speech recognition.
+ *
+ * @param {string[]} [grammarList=[]] - List of voice commands to recognize, by default it is an `[]` array
+ * @param {number} [autoStopTimeout=8000] - A timeout to stop recording automatically (milliseconds), and default timeout value is `8000` milliseconds
+ * @returns {SpeechRecognitionHook} - The speech recognition hook instance.
+ */
+export const useSpeechRecognition = (
+  grammarList: string[] = [],
+  autoStopTimeout: number = 8000
+): SpeechRecognitionHook => {
   const recognitionRef = useRef<any>(null);
   // State
   const [isListening, setIsListening] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [result, setResult] = useState("");
 
-  const grammar = `#JSGF V1.0; grammar commands; public <command> = ${commands.join(
+  const grammar = `#JSGF V1.0; grammar commands; public <command> = ${grammarList.join(
     " | "
   )};`;
   const onStop = useCallback(() => {
@@ -38,7 +48,9 @@ export const useSpeechRecognition = (commands = []): SpeechRecognitionHook => {
     recognitionRef?.current.start();
     setIsListening(true);
 
-    setTimeout(() => onStop(), 8000);
+    if (autoStopTimeout) {
+      setTimeout(() => onStop(), autoStopTimeout);
+    }
   }, [isListening, onStop]);
 
   const onResult = (event: any) => {
@@ -60,6 +72,12 @@ export const useSpeechRecognition = (commands = []): SpeechRecognitionHook => {
     const SpeechGrammarList =
       _window?.SpeechGrammarList || _window?.webkitSpeechGrammarList;
 
+    if (!SpeechRecognition) {
+      console.error(BROWSER_ERR);
+
+      setErrorMessage(BROWSER_ERR);
+    }
+
     if (SpeechRecognition) {
       recognitionRef.current = new SpeechRecognition();
 
@@ -76,18 +94,6 @@ export const useSpeechRecognition = (commands = []): SpeechRecognitionHook => {
       recognitionRef.current.onresult = (event: any) => onResult(event);
     }
   }, []);
-
-  if (!recognitionRef?.current) {
-    console.error(BROWSER_ERR);
-
-    return {
-      onStart,
-      onStop,
-      isListening,
-      errorMessage: BROWSER_ERR,
-      result
-    };
-  }
 
   return {
     onStart,
