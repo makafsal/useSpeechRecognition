@@ -1,0 +1,69 @@
+.micButton {
+  padding: 0;
+  height: 80px;
+  width: 80px;
+  border-radius: 100px;
+  box-shadow: 1px 1px 7px 5px rgb(0 0 0 / 10%);
+  background-color: transparent;
+  border: none;
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    & circle {
+      transition: opacity 0.15s ease;
+      opacity: 0.9;
+    }
+  }
+
+  &::after,
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    width: 80px;
+    height: 80px;
+    background-color: #ffffff;
+    border-radius: 100px;
+    z-index: -1;
+  }
+
+  &.animate {
+    &::before {
+      animation: pulsing 1.5s ease infinite;
+    }
+    &::after {
+      animation: pulsing 1.5s ease 0.5s infinite;
+    }
+  }
+
+  & .micIcon {
+    &.animate {
+      animation: softBlink 1s ease-in infinite;
+    }
+  }
+}
+
+@keyframes softBlink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  to {
+    stroke-dashoffset: 0.9;
+  }
+}
+
+@keyframes pulsing {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
