@@ -4,10 +4,10 @@ A react hook for speech recognition using SpeechRecognition API
 ## Getting started
 
 ### Demo
-Please see the demo app
+Please see the [https://speech-recognition-demo.vercel.app/](demo app)
 
 ### Example
-Here is an example of the usage of the hook
+Here is an example of the usage of the hook in [https://stackblitz.com/~/github.com/makafsal/speechRecognitionDemo](Stackblitz)
 
 ### Install
 ```sh
