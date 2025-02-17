@@ -1,3 +1,6 @@
+> [!WARNING]  
+> The examples and demo app may seem in progress, we will update it soon. The hook is ready to use 🥳.
+
 # useSpeechRecognition
 A react hook for speech recognition using SpeechRecognition API
 
