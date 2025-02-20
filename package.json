@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/makafsal/useSpeechRecognition/issues"
   },
-  "homepage": "https://github.com/makafsal/useSpeechRecognition#readme",
+  "homepage": "https://speech-recognition-demo.vercel.app/",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-node-resolve": "^16.0.0",
