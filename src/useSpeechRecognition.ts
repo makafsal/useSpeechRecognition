@@ -19,17 +19,17 @@ export interface SpeechRecognitionOptions extends Partial<EventTarget> {
   autoStopTimeout?: number; // A timeout to stop recording automatically (milliseconds), and default timeout value is `8000` milliseconds
 
   // Event Handlers
-  onstart?: (event: Event) => void; // Fired when recognition starts
-  onend?: (event: Event) => void; // Fired when recognition ends
-  onerror?: (event: any) => void; // Fired on error
-  onresult?: (event: any) => void; // Fired when a result is received
-  onsoundstart?: (event: Event) => void; // Fired when sound is detected
-  onsoundend?: (event: Event) => void; // Fired when sound stops
-  onspeechstart?: (event: Event) => void; // Fired when speech is detected
-  onspeechend?: (event: Event) => void; // Fired when speech stops
-  onnomatch?: (event: any) => void; // Fired when no match is found
-  onaudiostart?: (event: Event) => void; // Fired when audio capture starts
-  onaudioend?: (event: Event) => void; // Fired when audio capture ends
+  // onstart?: (event: Event) => void; // Fired when recognition starts
+  // onend?: (event: Event) => void; // Fired when recognition ends
+  // onerror?: (event: any) => void; // Fired on error
+  // onresult?: (event: any) => void; // Fired when a result is received
+  // onsoundstart?: (event: Event) => void; // Fired when sound is detected
+  // onsoundend?: (event: Event) => void; // Fired when sound stops
+  // onspeechstart?: (event: Event) => void; // Fired when speech is detected
+  // onspeechend?: (event: Event) => void; // Fired when speech stops
+  // onnomatch?: (event: any) => void; // Fired when no match is found
+  // onaudiostart?: (event: Event) => void; // Fired when audio capture starts
+  // onaudioend?: (event: Event) => void; // Fired when audio capture ends
 
   // Methods
   // start(): void; // Starts speech recognition
@@ -79,18 +79,27 @@ export const useSpeechRecognition = (
     if (options?.autoStopTimeout) {
       setTimeout(() => onStop(), options?.autoStopTimeout);
     }
-  }, [isListening, onStop]);
+  }, [isListening, onStop, options?.autoStopTimeout]);
 
-  const onResult = (event: any) => {
-    const command = event.results[0][0].transcript;
-    setResult(command);
-    onStop();
-  };
+  const onResult = useCallback(
+    (event: any) => {
+      const command = event.results[0][0].transcript;
+      setResult(command);
 
-  const onError = (event: any) => {
-    setErrorMessage(DETECTION_ERR);
-    onStop();
-  };
+      if (event.results[0].isFinal) {
+        onStop();
+      }
+    },
+    [onStop]
+  );
+
+  const onError = useCallback(
+    (event: any) => {
+      setErrorMessage(DETECTION_ERR);
+      onStop();
+    },
+    [onStop]
+  );
 
   useEffect(() => {
     const _window = window as any;
@@ -122,7 +131,15 @@ export const useSpeechRecognition = (
       recognitionRef.current.onerror = (event: any) => onError(event);
       recognitionRef.current.onresult = (event: any) => onResult(event);
     }
-  }, []);
+  }, [
+    grammar,
+    onError,
+    onResult,
+    options?.continuous,
+    options?.interimResults,
+    options?.lang,
+    options?.maxAlternatives
+  ]);
 
   return {
     onStart,
@@ -131,8 +148,4 @@ export const useSpeechRecognition = (
     errorMessage,
     result
   };
-};
-
-const MyCom = () => {
-  useSpeechRecognition({});
 };
