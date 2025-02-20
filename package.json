@@ -10,7 +10,9 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "test": "test"
+    "test": "test",
+    "publish-beta": "npm version prerelease --preid=beta && npm publish --tag beta",
+    "patch": "npm version patch && npm publish"
   },
   "repository": {
     "type": "git",
