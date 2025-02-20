@@ -8,7 +8,7 @@ interface SpeechRecognitionHook {
   result: string;
 }
 
-interface SpeechRecognitionOptions extends EventTarget {
+interface SpeechRecognitionOptions extends Partial<EventTarget> {
   // Properties
   grammars?: string[]; // A list of grammar strings for recognition
   lang?: string; // Language for recognition (e.g., 'en-US', 'fr-FR')
