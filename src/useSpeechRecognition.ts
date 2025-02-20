@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-interface SpeechRecognitionHook {
+export interface SpeechRecognitionHook {
   onStart: () => void;
   onStop: () => void;
   isListening: boolean;
@@ -8,7 +8,7 @@ interface SpeechRecognitionHook {
   result: string;
 }
 
-interface SpeechRecognitionOptions extends Partial<EventTarget> {
+export interface SpeechRecognitionOptions extends Partial<EventTarget> {
   // Properties
   grammars?: string[]; // A list of grammar strings for recognition
   lang?: string; // Language for recognition (e.g., 'en-US', 'fr-FR')
@@ -16,6 +16,7 @@ interface SpeechRecognitionOptions extends Partial<EventTarget> {
   interimResults?: boolean; // Whether to return interim results
   maxAlternatives?: number; // Maximum number of alternative transcripts to return
   serviceURI?: string; // URL of the speech recognition service (optional)
+  autoStopTimeout?: number; // A timeout to stop recording automatically (milliseconds), and default timeout value is `8000` milliseconds
 
   // Event Handlers
   onstart?: (event: Event) => void; // Fired when recognition starts
@@ -39,16 +40,14 @@ interface SpeechRecognitionOptions extends Partial<EventTarget> {
 const BROWSER_ERR = "SpeechRecognition API is not supported in this browser.";
 const DETECTION_ERR = "No speech detected.";
 
-// /**
-//  * Custom hook for speech recognition.
-//  *
-//  * @param {options} [SpeechRecognitionOptions] - List of voice commands to recognize, by default it is an `[]` array
-//  * @param {number} [autoStopTimeout=8000] - A timeout to stop recording automatically (milliseconds), and default timeout value is `8000` milliseconds
-//  * @returns {SpeechRecognitionHook} - The speech recognition hook instance.
-//  */
+/**
+ * Custom hook for speech recognition.
+ *
+ * @param {SpeechRecognitionOptions} [options]
+ * @returns {SpeechRecognitionHook} The speech recognition hook instance.
+ */
 export const useSpeechRecognition = (
-  options?: SpeechRecognitionOptions,
-  autoStopTimeout: number = 8000
+  options?: SpeechRecognitionOptions
 ): SpeechRecognitionHook => {
   const recognitionRef = useRef<any>(null);
   // State
@@ -77,8 +76,8 @@ export const useSpeechRecognition = (
     recognitionRef?.current.start();
     setIsListening(true);
 
-    if (autoStopTimeout) {
-      setTimeout(() => onStop(), autoStopTimeout);
+    if (options?.autoStopTimeout) {
+      setTimeout(() => onStop(), options?.autoStopTimeout);
     }
   }, [isListening, onStop]);
 
@@ -132,4 +131,8 @@ export const useSpeechRecognition = (
     errorMessage,
     result
   };
+};
+
+const MyCom = () => {
+  useSpeechRecognition({});
 };
