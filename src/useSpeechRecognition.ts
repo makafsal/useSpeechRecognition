@@ -47,7 +47,7 @@ const DETECTION_ERR = "No speech detected.";
 //  * @returns {SpeechRecognitionHook} - The speech recognition hook instance.
 //  */
 export const useSpeechRecognition = (
-  options: SpeechRecognitionOptions,
+  options?: SpeechRecognitionOptions,
   autoStopTimeout: number = 8000
 ): SpeechRecognitionHook => {
   const recognitionRef = useRef<any>(null);
