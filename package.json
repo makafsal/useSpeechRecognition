@@ -1,6 +1,6 @@
 {
   "name": "@afsalk/use-speech-recognition",
-  "version": "1.0.18",
+  "version": "1.0.24",
   "description": "A custom React hook for speech recognition built using SpeechRecognition API",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/makafsal/useSpeechRecognition/issues"
   },
-  "homepage": "https://github.com/makafsal/useSpeechRecognition#readme",
+  "homepage": "https://speech-recognition-demo.vercel.app/",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-node-resolve": "^16.0.0",
