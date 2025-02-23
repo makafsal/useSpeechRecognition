@@ -32,7 +32,7 @@ jobs:
       - name: Determine release type
         id: versioning
         run: |
-          if [[ "${{ github.event.pull_request.title }}" =~ "[patch]" ]] || git log --format=%B -n 1 | grep -q '\[patch\]'; then
+          if [[ "${{ github.event.pull_request.title }}" =~ "[patch]" ]]; then
             echo "RELEASE_TYPE=patch" >> $GITHUB_ENV
           else
             echo "RELEASE_TYPE=major" >> $GITHUB_ENV
