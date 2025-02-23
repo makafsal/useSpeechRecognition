@@ -29,6 +29,7 @@ jobs:
       - name: Set beta version
         run: |
           npm version prerelease --preid=beta -m "Release beta version %s"
+          git pull
           git commit -am "ci: bump package version"
           git push --follow-tags
 

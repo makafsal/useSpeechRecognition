@@ -37,6 +37,7 @@ jobs:
           else
             echo "RELEASE_TYPE=major" >> $GITHUB_ENV
           fi
+          git pull
           git commit -am "ci: bump package version"
           git push --follow-tags
 
