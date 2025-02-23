@@ -33,10 +33,10 @@ jobs:
         run: |
           npm version prerelease --preid=beta -m "Release beta version %s"
 
+      - name: Push the tag
+        run: git push --follow-tags
+
       - name: Publish beta
         run: npm publish --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Push the tag
-        run: git push --follow-tags
