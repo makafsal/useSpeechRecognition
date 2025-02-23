@@ -33,10 +33,17 @@ const { onStart, isListening, result, errorMessage } = useSpeechRecognition();
 
 ## Properties
 
-| **Property**    | **Type**     | **Description** |
-|---------------|------------|----------------|
-| `onStart`     | `() => void` | Starts speech recognition. |
-| `onStop`     | `() => void` | Stop speech recognition. |
-| `isListening` | `boolean` | Indicates whether recognition is active. |
-| `result`      | `string` | Holds the recognized text. |
-| `errorMessage` | `string` | Contains any error messages. |
+| **Property**    | **Type**     | **Description**                          |
+| --------------- | ------------ | ---------------------------------------- |
+| `onStart`       | `() => void` | Starts speech recognition.               |
+| `onStop`        | `() => void` | Stop speech recognition.                 |
+| `isListening`   | `boolean`    | Indicates whether recognition is active. |
+| `result`        | `string`     | Holds the recognized text.               |
+| `errorMessage`  | `string`     | Contains any error messages.             |
+
+## Optional Parameters
+
+| **Parameter**     | **Type**     | **Description**                                                                                           |
+| ----------------- | ------------ | --------------------------------------------------------------------------------------------------------- |
+| `grammarList`     | `string[]`   | The list of grammars will be understood by the SpeechRecognition, default value is `[]`                   |
+| `autoStopTimeout` | `number`     | Set a timeout delay to automatically stop recording after this much milliseconds, default value is `8000` |

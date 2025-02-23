@@ -1,0 +1,35 @@
+name: Beta Release
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  publish-beta:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          registry-url: "https://registry.npmjs.org/"
+
+      - name: Git Auth
+        run: |
+          git config --global user.email "makafsal@gmail.com"
+          git config --global user.name "Afsal K"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Set beta version
+        run: npm version prerelease --preid=beta -m "Release beta version %s"
+
+      - name: Publish beta
+        run: npm publish --tag beta
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

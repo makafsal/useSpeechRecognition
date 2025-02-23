@@ -1,6 +1,6 @@
 {
   "name": "@afsalk/use-speech-recognition",
-  "version": "1.0.24",
+  "version": "1.0.26-beta.8",
   "description": "A custom React hook for speech recognition built using SpeechRecognition API",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -10,7 +10,10 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "test": "test"
+    "test": "test",
+    "prerelease": "npm run build && npm version prerelease --preid=beta && npm publish --tag beta",
+    "release": "npm run build && npm version && npm publish",
+    "patch": "npm run build && npm version patch && npm publish"
   },
   "repository": {
     "type": "git",
