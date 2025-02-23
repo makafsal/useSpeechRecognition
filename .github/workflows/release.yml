@@ -47,4 +47,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Push version update
-        run: git push --follow-tags
+        run: |
+          git config --global user.email "makafsal@gmail.com"
+          git config --global user.name "Afsal K" 
+          git push --follow-tags
