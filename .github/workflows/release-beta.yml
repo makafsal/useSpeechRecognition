@@ -35,6 +35,8 @@ jobs:
 
       - name: Push the tag
         run: git push --follow-tags
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish beta
         run: npm publish --tag beta
