@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export interface SpeechRecognitionHook {
-  onStart: () => void;
-  onStop: () => void;
-  isListening: boolean;
-  errorMessage: string;
-  result: string;
+  start?: () => void;
+  stop?: () => void;
+  abort?: () => void;
+  isListening?: boolean;
+  errorMessage?: string;
+  result?: string;
 }
 
 export interface SpeechRecognitionOptions extends Partial<EventTarget> {
@@ -19,22 +20,17 @@ export interface SpeechRecognitionOptions extends Partial<EventTarget> {
   autoStopTimeout?: number; // A timeout to stop recording automatically (milliseconds), and default timeout value is `8000` milliseconds
 
   // Event Handlers
-  // onstart?: (event: Event) => void; // Fired when recognition starts
-  // onend?: (event: Event) => void; // Fired when recognition ends
-  // onerror?: (event: any) => void; // Fired on error
-  // onresult?: (event: any) => void; // Fired when a result is received
-  // onsoundstart?: (event: Event) => void; // Fired when sound is detected
-  // onsoundend?: (event: Event) => void; // Fired when sound stops
-  // onspeechstart?: (event: Event) => void; // Fired when speech is detected
-  // onspeechend?: (event: Event) => void; // Fired when speech stops
-  // onnomatch?: (event: any) => void; // Fired when no match is found
-  // onaudiostart?: (event: Event) => void; // Fired when audio capture starts
-  // onaudioend?: (event: Event) => void; // Fired when audio capture ends
-
-  // Methods
-  // start(): void; // Starts speech recognition
-  // stop(): void; // Stops speech recognition
-  // abort(): void; // Aborts speech recognition
+  onstart?: (event: Event) => void; // Fired when recognition starts
+  onend?: (event: Event) => void; // Fired when recognition ends
+  onerror?: (event: any) => void; // Fired on error
+  onresult?: (event: any) => void; // Fired when a result is received
+  onsoundstart?: (event: Event) => void; // Fired when sound is detected
+  onsoundend?: (event: Event) => void; // Fired when sound stops
+  onspeechstart?: (event: Event) => void; // Fired when speech is detected
+  onspeechend?: (event: Event) => void; // Fired when speech stops
+  onnomatch?: (event: any) => void; // Fired when no match is found
+  onaudiostart?: (event: Event) => void; // Fired when audio capture starts
+  onaudioend?: (event: Event) => void; // Fired when audio capture ends
 }
 
 const BROWSER_ERR = "SpeechRecognition API is not supported in this browser.";
@@ -59,14 +55,14 @@ export const useSpeechRecognition = (
     " | "
   )};`;
 
-  const onStop = useCallback(() => {
+  const stop = useCallback(() => {
     recognitionRef?.current.stop();
     setIsListening(false);
   }, []);
 
-  const onStart = useCallback(() => {
+  const start = useCallback(() => {
     if (isListening) {
-      onStop();
+      stop();
       return;
     }
 
@@ -77,28 +73,39 @@ export const useSpeechRecognition = (
     setIsListening(true);
 
     if (options?.autoStopTimeout) {
-      setTimeout(() => onStop(), options?.autoStopTimeout);
+      setTimeout(() => stop(), options?.autoStopTimeout);
     }
-  }, [isListening, onStop, options?.autoStopTimeout]);
+  }, [isListening, stop, options?.autoStopTimeout]);
+
+  const abort = () => {
+    recognitionRef?.current?.abort();
+  };
 
   const onResult = useCallback(
     (event: any) => {
-      const command = event.results[0][0].transcript;
-      setResult(command);
+      const _results = [...event.results];
+      const _transcripts: SpeechRecognitionAlternative[] =
+        _results?.[_results?.length - 1];
+      const _transcript = _transcripts?.[_transcripts?.length - 1]?.transcript;
+      setResult(_transcript);
 
       if (event.results[0].isFinal) {
-        onStop();
+        stop();
       }
+
+      options?.onresult?.(event);
     },
-    [onStop]
+    [stop]
   );
 
   const onError = useCallback(
     (event: any) => {
       setErrorMessage(DETECTION_ERR);
-      onStop();
+      stop();
+
+      options?.onerror?.(event);
     },
-    [onStop]
+    [stop]
   );
 
   useEffect(() => {
@@ -128,8 +135,25 @@ export const useSpeechRecognition = (
       recognitionRef.current.interimResults = options?.interimResults;
       recognitionRef.current.maxAlternatives = options?.maxAlternatives;
 
+      recognitionRef.current.onstart = (event: Event) =>
+        options?.onstart?.(event);
+      recognitionRef.current.onend = (event: Event) => options?.onend?.(event);
       recognitionRef.current.onerror = (event: any) => onError(event);
       recognitionRef.current.onresult = (event: any) => onResult(event);
+      recognitionRef.current.onsoundstart = (event: Event) =>
+        options?.onsoundstart?.(event);
+      recognitionRef.current.onsoundend = (event: Event) =>
+        options?.onsoundend?.(event);
+      recognitionRef.current.onspeechstart = (event: Event) =>
+        options?.onspeechstart?.(event);
+      recognitionRef.current.onspeechend = (event: Event) =>
+        options?.onspeechend?.(event);
+      recognitionRef.current.onnomatch = (event: Event) =>
+        options?.onnomatch?.(event);
+      recognitionRef.current.onaudiostart = (event: Event) =>
+        options?.onaudiostart?.(event);
+      recognitionRef.current.onaudioend = (event: Event) =>
+        options?.onaudioend?.(event);
     }
   }, [
     grammar,
@@ -142,8 +166,9 @@ export const useSpeechRecognition = (
   ]);
 
   return {
-    onStart,
-    onStop,
+    start,
+    stop,
+    abort,
     isListening,
     errorMessage,
     result
