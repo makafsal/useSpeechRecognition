@@ -1,6 +1,6 @@
 {
   "name": "@afsalk/use-speech-recognition",
-  "version": "1.0.26-beta.7",
+  "version": "1.0.26-beta.8",
   "description": "A custom React hook for speech recognition built using SpeechRecognition API",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
