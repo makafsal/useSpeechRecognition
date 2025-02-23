@@ -83,13 +83,13 @@ export const useSpeechRecognition = (
 
   const onResult = useCallback(
     (event: any) => {
-      const _results = [...event.results];
+      const _results = event.results;
       const _transcripts: SpeechRecognitionAlternative[] =
         _results?.[_results?.length - 1];
       const _transcript = _transcripts?.[_transcripts?.length - 1]?.transcript;
       setResult(_transcript);
 
-      if (event.results[0].isFinal) {
+      if (event.results[_results?.length - 1].isFinal) {
         stop();
       }
 
