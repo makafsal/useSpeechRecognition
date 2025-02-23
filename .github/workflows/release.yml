@@ -37,6 +37,8 @@ jobs:
           else
             echo "RELEASE_TYPE=major" >> $GITHUB_ENV
           fi
+          git commit -am "ci: bump package version"
+          git push --follow-tags
 
       - name: Bump version
         run: npm version ${{ env.RELEASE_TYPE }} -m "Release ${{ env.RELEASE_TYPE }} version %s"
