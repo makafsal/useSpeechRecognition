@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build the package
+        run: npm run build
+
       - name: Set beta version
         run: |
           npm version prerelease --preid=beta -m "Release beta version %s"

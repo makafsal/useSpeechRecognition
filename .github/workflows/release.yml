@@ -38,6 +38,9 @@ jobs:
             echo "RELEASE_TYPE=major" >> $GITHUB_ENV
           fi
 
+      - name: Build the package
+        run: npm run build
+
       - name: Bump version
         run: npm version ${{ env.RELEASE_TYPE }} -m "Release ${{ env.RELEASE_TYPE }} version %s"
 
@@ -45,9 +48,3 @@ jobs:
         run: npm publish --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Push version update
-        run: |
-          git config --global user.email "makafsal@gmail.com"
-          git config --global user.name "Afsal K" 
-          git push --follow-tags
